@@ -1,0 +1,29 @@
+version: '2'
+
+services:
+    apache:
+      build: ./apache
+      volumes:
+        - ${APP_DIR}:/var/www/html
+        - ./apache/httpd.conf:/etc/httpd/conf/httpd.conf
+        - ./apache/php.ini:/etc/php.ini
+        - ./apache/logs:/var/log/httpd
+      ports:
+        - "10080:80"
+      links:
+        - mysql
+
+    mysql:
+      build: ./mysql
+      environment:
+        - MYSQL_DATABASE=${MYSQL_DATABASE}
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - TZ=JST
+      volumes:
+        - ./mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+        - ./mysql/data:/var/lib/mysql
+      ports:
+        - "13306:3306"
+
